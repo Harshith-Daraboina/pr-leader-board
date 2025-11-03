@@ -230,9 +230,20 @@ export default function Home() {
         </div>
 
         {leaderboard.length > 0 && (
-          <div className="mb-4 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-            <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span>Auto-refreshing every minute</span>
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+              <span>Auto-refreshing every minute</span>
+            </div>
+            <button
+              onClick={fetchLeaderboard}
+              disabled={loading}
+              className="flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-zinc-100 disabled:bg-zinc-100 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+              title="Refresh PR data"
+            >
+              <span className={loading ? "animate-spin" : ""}>↻</span>
+              {loading ? "Refreshing..." : "Refresh PRs"}
+            </button>
           </div>
         )}
 
@@ -344,6 +355,7 @@ export default function Home() {
           leaderboard={leaderboard}
           totalPRs={totalPRs}
           loading={loading}
+          onRefresh={fetchLeaderboard}
         />
       </div>
     </div>

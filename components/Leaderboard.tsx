@@ -24,9 +24,10 @@ interface LeaderboardProps {
   leaderboard: Contributor[];
   totalPRs: number;
   loading?: boolean;
+  onRefresh?: () => void;
 }
 
-export default function Leaderboard({ leaderboard, totalPRs, loading }: LeaderboardProps) {
+export default function Leaderboard({ leaderboard, totalPRs, loading, onRefresh }: LeaderboardProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -45,10 +46,21 @@ export default function Leaderboard({ leaderboard, totalPRs, loading }: Leaderbo
 
   return (
     <div className="w-full">
-      <div className="mb-6 text-center">
+      <div className="mb-6 flex items-center justify-between">
         <p className="text-lg text-zinc-600 dark:text-zinc-400">
           Total Pull Requests: <span className="font-semibold text-foreground">{totalPRs}</span>
         </p>
+        {onRefresh && (
+          <button
+            onClick={onRefresh}
+            disabled={loading}
+            className="flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-zinc-100 disabled:bg-zinc-100 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+            title="Refresh PR data"
+          >
+            <span className={loading ? "animate-spin" : ""}>↻</span>
+            Refresh
+          </button>
+        )}
       </div>
       <div className="space-y-4">
         {leaderboard.map((contributor, index) => (
