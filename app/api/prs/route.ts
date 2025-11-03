@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
+interface GitHubPR {
+  number: number;
+  title: string;
+  state: string;
+  created_at: string;
+  merged_at: string | null;
+  html_url: string;
+  user?: {
+    login: string;
+    avatar_url: string;
+  };
+}
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -25,7 +38,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const prs = [];
+    const prs: GitHubPR[] = [];
     let page = 1;
     const perPage = 100;
     let hasMore = true;
@@ -57,7 +70,7 @@ export async function GET(request: NextRequest) {
       // Filter PRs by date if since parameter is provided
       if (since) {
         const sinceDate = new Date(since);
-        const filtered = data.filter((pr: any) => {
+        const filtered = (data as GitHubPR[]).filter((pr) => {
           const prDate = new Date(pr.created_at);
           return prDate >= sinceDate;
         });
@@ -110,7 +123,7 @@ export async function GET(request: NextRequest) {
         username,
         count: data.count,
         prs: data.prs,
-        avatar: prs.find((pr: any) => pr.user?.login === username)?.user?.avatar_url || "",
+        avatar: prs.find((pr) => pr.user?.login === username)?.user?.avatar_url || "",
       }))
       .sort((a, b) => b.count - a.count);
 
